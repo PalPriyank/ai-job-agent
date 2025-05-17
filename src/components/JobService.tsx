@@ -6,7 +6,7 @@ export const getJobPostPreview = async (data: any) => {
 
 export const getJobByAccountId = async () => {
   return axios.get(
-    "/api/v1/jobs/accountId/cd214518-e5a1-4cda-bf49-6f6162fef23b",
+    "https://jobs-job-api.mwwnextappdev-us.monster-next.com/v1/jobs/accountId/cd214518-e5a1-4cda-bf49-6f6162fef23b",
     {
       headers: {
         accept: "*/*",
