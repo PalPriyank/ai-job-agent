@@ -1,22 +1,22 @@
 import { useState } from "react";
 import InterviewFeedback from "../Interview/InterviewFeedback";
 import { Eye } from "lucide-react";
-type Interview = {
-  id?: string;
-  name: string;
-  role: string;
-  type: string;
-  level?: string;
-  techstack?: Array<string>;
-  questions?: any;
-  userId?: string;
-  jobId?: string;
-  finalized: boolean;
-  coverImage?: string;
-  createdAt: string;
-};
+// type Interview = {
+//   id?: string;
+//   name: string;
+//   role: string;
+//   type: string;
+//   level?: string;
+//   techstack?: Array<string>;
+//   questions?: any;
+//   userId?: string;
+//   jobId?: string;
+//   finalized: boolean;
+//   coverImage?: string;
+//   createdAt: string;
+// };
 const JobInterviewsList = () => {
-  const [interviewList, setInterviewList] = useState<Array<Interview>>([
+  const interviewList = [
     {
       name: "Ashish Kumar",
       role: "Sales Representative",
@@ -45,8 +45,8 @@ const JobInterviewsList = () => {
       finalized: true,
       createdAt: "2025 05 13",
     },
-  ]);
-  const [interviewFeedbackData, setInterviewFeedbackData] = useState({
+  ]
+  const interviewFeedbackData = {
     id: "X88H3oeyj9ji7dQO3gCD",
     interviewId: "jakUrzTAP8e6HPjh3gzi",
     userId: "8KRW6MBfIZXL7xntyhtm1GzSwAE3",
@@ -91,7 +91,7 @@ const JobInterviewsList = () => {
     ],
     finalAssessment:
       "The candidate demonstrated limited technical knowledge and struggled to provide specific examples of their experience with Next.js. Significant improvement is needed in technical skills, problem-solving articulation, and confidence.",
-  });
+  }
   const [showFeedback, setShowFeedback] = useState<boolean>(false);
   return (
     <div>

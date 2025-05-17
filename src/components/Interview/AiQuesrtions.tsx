@@ -1,11 +1,11 @@
 import { FC } from "react";
 import { Pencil, X } from "lucide-react";
 
-type Question = {
-  id?: string;
-  type?: "Technical" | "Behavioral" | "Leadership" | string;
-  question: string;
-};
+// type Question = {
+//   id?: string;
+//   type?: "Technical" | "Behavioral" | "Leadership" | string;
+//   question: string;
+// };
 
 type QuestionCardProps = {
   id:string,

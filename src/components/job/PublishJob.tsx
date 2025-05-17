@@ -26,7 +26,7 @@ const PublishJob: React.FC<props> = ({ selectedJobData,fetchJob,isLoading, setIs
     const [isPreviewOpen, setIsPreview] = useState(false);
 
     const [questionModal, setQuestionModal] = useState(false);
-    const [screeningQuestions, setScreeningQuestions] = useState([
+    const screeningQuestions = [
         {
             question: "What is multithreading?",
             options: [
@@ -127,7 +127,7 @@ const PublishJob: React.FC<props> = ({ selectedJobData,fetchJob,isLoading, setIs
             ],
             answer: 3,
         }
-    ])
+    ]
     return (
         <div>
             <JobQuestionsModal fetchjob={fetchJob} selectedJob={selectedJobData} isOpen={questionModal} onClose={() => setQuestionModal(false)} questions={screeningQuestions} />

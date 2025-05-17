@@ -1,11 +1,8 @@
-import React, { ReactNode } from "react";
+import React from "react";
 import { Outlet } from "react-router-dom";
 import image from "../assets/image.png"
 import footer from "../assets/footer.png"
 
-interface props {
-    children: ReactNode;
-}
 
 const Layout: React.FC = () => {
     return (<div>

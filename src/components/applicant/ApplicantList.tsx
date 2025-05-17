@@ -34,7 +34,7 @@ const statusColors: Record<ApplicantStatus, string> = {
 const ApplicatList: React.FC<Props> = ({ selectedJob }) => {
   const navigate = useNavigate();
 
-  const [count, setCount] = useState<number>(0);
+  const count = 0;
   const [isFilterModalOpen, setFilterModalOpen] = useState(false);
   const [viewAnalysis, setViewAnalysis] = useState(false);
   const [applicantList, setApplicantList] = useState([]);
@@ -43,7 +43,6 @@ const ApplicatList: React.FC<Props> = ({ selectedJob }) => {
     try {
       setApplicantLoader(true);
       const response = await getApplicantByJobId(selectedJob?.jobId ?? "");
-      console.log("✌️response --->", response);
       setApplicantList(response.data);
     } catch (error) {
       console.error("Error fetching Applicants ", error);

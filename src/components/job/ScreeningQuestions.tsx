@@ -1,5 +1,3 @@
-import { useState } from "react";
-import { publishJob } from "../JobService";
 
 
 const ScreeningQuestions = ({ questions }: { questions: Array<any> }) => {
@@ -13,7 +11,7 @@ const ScreeningQuestions = ({ questions }: { questions: Array<any> }) => {
                 <p className="mb-4 text-sm text-gray-800">{q.question}</p>
 
                 {/* Options */}
-                {q.options.map((opt: any, oIndex: number) => {
+                {q.options.map((opt: any) => {
                     const isCorrect = opt.id === q.answer;
 
                     return (

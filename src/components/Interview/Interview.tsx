@@ -30,7 +30,7 @@ const Interview = () => {
 
   const handleDelete = (id: string) => {
     setQuestions((prev) =>
-      prev.filter((q, index) => (index as unknown as string) !== id)
+      prev.filter((q, index) => (index as unknown as string)||q!== id)
     );
   };
   const handleGenerateQuestions = async () => {

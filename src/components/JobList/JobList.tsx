@@ -7,7 +7,7 @@ import JobListSkeleton from './JobListSkeleton';
 import PublishJob from '../job/PublishJob';
 import ScreeningQuestions from '../job/ScreeningQuestions';
 import JobInterviewsList from '../job/JobInterviewsList';
-import { LocateIcon, MapIcon, MapPin } from 'lucide-react';
+import { MapPin } from 'lucide-react';
 
 type ApplicantStatus = 'New' | 'Screening' | 'Interview' | 'Rejected';
 
@@ -39,57 +39,6 @@ interface jobData {
     screener_questions: Array<string>;
 }
 
-const jobs: Job[] = [
-    {
-        jobId: '1',
-        title: 'Senior Full Stack Engineer',
-        company: 'Murdock & Nelson',
-        location: 'New York, NY',
-        updatedAt: '04/15/2025',
-        status: 'ACTIVE',
-        applicants: [
-            {
-                name: 'Alex Johnson',
-                email: 'alex.johnson@example.com',
-                matchScore: 92,
-                status: 'Screening',
-                appliedDate: '04/18/2025',
-            },
-            {
-                name: 'Jamie Smith',
-                email: 'jamie.smith@example.com',
-                matchScore: 88,
-                status: 'Interview',
-                appliedDate: '04/17/2025',
-            },
-            {
-                name: 'Taylor Wilson',
-                email: 'taylor.wilson@example.com',
-                matchScore: 78,
-                status: 'New',
-                appliedDate: '04/19/2025',
-            },
-            {
-                name: 'Morgan Lee',
-                email: 'morgan.lee@example.com',
-                matchScore: 65,
-                status: 'Rejected',
-                appliedDate: '04/16/2025',
-            },
-        ],
-    },
-    {
-        jobId: '2',
-        title: 'Accounts Payable Specialist',
-        company: 'Financial Services Inc.',
-        location: 'New York, NY',
-        updatedAt: '03/20/2025',
-        status: 'CLOSED',
-        applicants: [],
-    },
-    // Add more jobs...
-];
-
 
 
 const JobList: React.FC = () => {
@@ -100,7 +49,7 @@ const JobList: React.FC = () => {
     const [jobList, setJobList] = useState<any>();
 console.log('✌️jobList --->', jobList);
     const [isModalOpen, setModalOpen] = useState(false);
-    const [screeningQuestions, setScreeningQuestions] = useState([
+    const screeningQuestions= [
         {
             question: "What is multithreading?",
             options: [
@@ -201,7 +150,7 @@ console.log('✌️jobList --->', jobList);
             ],
             answer: 3,
         }
-    ])
+    ]
     const [selectedJobData, setSelectedJobData] = useState<jobData>(
         {
             title: "Frontend Developer",

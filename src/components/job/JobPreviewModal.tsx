@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { XMarkIcon, PencilIcon, CheckIcon } from '@heroicons/react/24/outline';
 import { motion, AnimatePresence } from 'framer-motion';
-import { publishJob } from '../JobService';
 interface JobData {
   title: string;
   recommended_location: string;
@@ -33,8 +32,7 @@ const JobPreviewModal: React.FC<JobDescriptionModalProps> = ({ openScreening,isO
   const [responsibility, setResponsibility] = useState<Array<string>>(
   );
 
-  const [skills, setSkills] = useState(showAllSkills ? jobData.skills : jobData.skills?.slice(0, 6) ?? []
-  );
+  const skills =showAllSkills ? jobData.skills : jobData.skills?.slice(0, 6) ?? []
   const handlePublishJob = async () => {
     onClose()
     openScreening()
