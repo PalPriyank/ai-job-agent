@@ -47,7 +47,6 @@ const JobList: React.FC = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [listLoading, setListLoading] = useState(false);
     const [jobList, setJobList] = useState<any>();
-console.log('✌️jobList --->', jobList);
     const [isModalOpen, setModalOpen] = useState(false);
     const screeningQuestions= [
         {
@@ -211,7 +210,7 @@ console.log('✌️jobList --->', jobList);
                     {listLoading ? <JobListSkeleton /> : jobList?.map((job: any) => (
                         <div
                             key={job.jobId}
-                            className={`p-4 bg-white  shadow-md border-gray-200 mb-2 cursor-pointer overflow-y-auto ${selectedJob?.jobId === job.jobId ? 'bg-purple-50 border-l-4 border-purple-500' : ''
+                            className={`p-4    border-gray-200 mb-2 cursor-pointer overflow-y-auto ${selectedJob?.jobId === job.jobId ? ' border-l-4 border-purple-500 shadow-lg bg-gray-200' : 'shadow-sm bg-white'
                                 }`}
                             onClick={() => (setSelectedJob(job), setSelectedJobData(job), setActiveTab('job'))}
                         >

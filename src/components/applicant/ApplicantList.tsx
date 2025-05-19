@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Eye, Mail, Phone, SlidersHorizontal } from "lucide-react";
+import { Ellipsis, EllipsisVertical, Eye, Mail, Option, Phone, SlidersHorizontal } from "lucide-react";
 import FilterApplicantsModal from "./FilterApplicantsModal";
 import { getApplicantByJobId } from "./applicantService";
 import ApplicantAnalysis from "./ApplicantCard";
@@ -38,6 +38,32 @@ const ApplicatList: React.FC<Props> = ({ selectedJob }) => {
   const [isFilterModalOpen, setFilterModalOpen] = useState(false);
   const [viewAnalysis, setViewAnalysis] = useState(false);
   const [applicantList, setApplicantList] = useState([]);
+  const dummyApplicants = [
+    {
+        name :"John Alex",
+        email : "jalex@monster.com",
+        matchScore:56,
+        status : "Screening",
+        applyDate : '2025 12 03',
+
+    },
+    {
+        name :"Rober D. Junior",
+        email : "rdjunior@monster.com",
+        matchScore:96,
+        status : "Rejected",
+        applyDate : '2025 02 11',
+
+    },
+    {
+        name :"Chrish Hemsworth",
+        email : "chemsowrth@monster.com",
+        matchScore:36,
+        status : "New",
+        applyDate : '2025 03 14',
+
+    }
+  ]
   const [applicantLoader, setApplicantLoader] = useState<boolean>(false);
   const fetchApplicantList = async () => {
     try {
@@ -69,7 +95,7 @@ const ApplicatList: React.FC<Props> = ({ selectedJob }) => {
         <>
           <div className="flex justify-between items-center">
             <h2 className="text-lg font-semibold mb-4">
-              {selectedJob?.applicants?.length ?? 4} candidate
+              {[...dummyApplicants,...applicantList].length } candidate
               {selectedJob?.applicants?.length !== 1 && "s"} have applied
             </h2>
             <button
@@ -96,16 +122,16 @@ const ApplicatList: React.FC<Props> = ({ selectedJob }) => {
               </tr>
             </thead>
             <tbody>
-              {applicantList?.map((applicant: any, index) => (
+              {[...dummyApplicants,...applicantList]?.map((applicant: any, index) => (
                 <tr key={index} className="text-sm border-b">
                   <td className="p-3">
                     <div className="flex items-center space-x-3">
                       <div className="bg-purple-100 text-purple-700 w-8 h-8 rounded-full flex items-center justify-center font-bold uppercase">
-                        {applicant.user?.firstName[0]}
+                        {applicant.user?.firstName[0] ?? applicant?.name[0]}
                       </div>
                       <div>
                         <div className="font-medium">
-                          {applicant.user.firstName} {applicant.user.lastName}
+                          {applicant?.user?.firstName ??applicant.name} {applicant?.user?.lastName}
                         </div>
                         <div className="text-xs text-gray-500">
                           {applicant.email ?? "akumar@monster.com"}
@@ -126,7 +152,7 @@ const ApplicatList: React.FC<Props> = ({ selectedJob }) => {
                       <div className="w-24 h-2 bg-gray-200 rounded">
                         <div
                           className={`h-2 rounded ${
-                            applicant.matchScore ?? 87 > 85
+                            applicant.matchScore  > 85
                               ? "bg-green-500"
                               : applicant.matchScore ?? 74 > 70
                               ? "bg-yellow-500"
@@ -152,15 +178,15 @@ const ApplicatList: React.FC<Props> = ({ selectedJob }) => {
                     {new Date(applicant.applyDate).toDateString()}
                   </td>
                   <td className="p-3 space-x-3 text-gray-500">
-                    <button>
+                    {/* <button>
                       <Eye size={18} />
-                    </button>
+                    </button> */}
                     <button>
                       <Mail size={18} />
                     </button>
                     <button><Phone size={18} /></button>
-                    <button className="relative group">
-                      ⋮
+                    <button className="relative group font-extrabold">
+                      <EllipsisVertical size={20}/>
                       <div className="absolute hidden group-hover:block bg-white border shadow-md rounded-md p-2 right-0 mt-2 z-10">
                         <button
                           onClick={() =>

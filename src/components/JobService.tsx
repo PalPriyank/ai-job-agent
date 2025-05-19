@@ -6,7 +6,7 @@ export const getJobPostPreview = async (data: any) => {
 
 export const getJobByAccountId = async () => {
   return axios.get(
-    "https://jobs-job-api.mwwnextappdev-us.monster-next.com/jobs-job-api/v1/jobs/accountId/cd214518-e5a1-4cda-bf49-6f6162fef23b",
+    "/api/v1/jobs/accountId/254479a7-dd84-43ae-92f9-cb8f761a7b0e",
     {
       headers: {
         accept: "*/*",
@@ -19,7 +19,8 @@ export const getJobByAccountId = async () => {
 export const publishJob = (
   title: string,
   skills: Array<string>,
-  address: string
+  address: string,
+  description : string
 ) => {
   console.log("✌️skills --->", skills);
   return axios.post(
@@ -52,7 +53,7 @@ export const publishJob = (
         datePosted: "2025-05-14T07:53:05.241Z",
         validThrough: "2025-06-13T07:53:05.241Z",
         description:
-          "<p tabindex='0' role='textbox' aria-invalid='false'>rovide a little insight into your company values and culture. Plus, a friendly and inviting tone can do wonders when it comes to response rates.</p>",
+          `<p tabindex='0' role='textbox' aria-invalid='false'>${description}.</p>`,
         employmentType: ["FULL_TIME"],
         hiringOrganization: {
           name: "Priyank org",

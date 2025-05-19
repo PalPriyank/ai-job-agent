@@ -1,142 +1,240 @@
 import React from "react";
 import {
-  Radar,
-  RadarChart,
-  PolarGrid,
-  PolarAngleAxis,
-  PolarRadiusAxis,
-  ResponsiveContainer
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  Tooltip,
+  ResponsiveContainer,
 } from "recharts";
+import { Button } from "../ui/Button";
+import { motion } from "framer-motion";
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
+import { saveAs } from "file-saver";
+import { Download } from "lucide-react";
 
-type CategoryScore = {
-  name: string;
+interface Evaluation {
+  feedback: string;
   score: number;
-  comment: string;
-};
-
-type FeedbackData = {
-  id: string;
-  interviewId: string;
-  userId: string;
-  totalScore: number;
-  categoryScores: CategoryScore[];
-  strengths: string[];
-  areasForImprovement: string[];
-  finalAssessment: string;
-};
-
-interface Props {
-  feedback: FeedbackData;
 }
 
-const InterviewFeedbackWithChart: React.FC<Props> = ({ feedback }) => {
-  feedback = { id: "X88H3oeyj9ji7dQO3gCD",
-    interviewId: "jakUrzTAP8e6HPjh3gzi",
-    userId: "8KRW6MBfIZXL7xntyhtm1GzSwAE3",
-    totalScore: 30,
-    categoryScores: [
-      {
-        name: "Communication Skills",
-        score: 50,
-        comment:
-          "The candidate's communication was adequate but lacked detail and specific examples. Responses were often short and not well-structured.",
-      },
-      {
-        name: "Technical Knowledge",
-        score: 20,
-        comment:
-          "The candidate demonstrated a limited understanding of Next.js concepts such as data fetching methods (getStaticProps, getServerSideProps, getStaticPaths) and specific optimization techniques. They couldn't provide concrete examples of their experience.",
-      },
-      {
-        name: "Problem Solving",
-        score: 30,
-        comment:
-          "The candidate struggled to articulate specific challenges faced and solutions implemented, indicating a potential weakness in problem-solving or the ability to explain their problem-solving process.",
-      },
-      {
-        name: "Cultural Fit",
-        score: 40,
-        comment:
-          "The candidate mentioned collaborating with other developers, which is a positive sign. However, the lack of enthusiasm and detail makes it difficult to fully assess cultural fit.",
-      },
-      {
-        name: "Confidence and Clarity",
-        score: 10,
-        comment:
-          "The candidate lacked confidence and clarity in their responses. They frequently stated they had no experience or couldn't recall specific examples, which significantly impacted their overall presentation.",
-      },
-    ],
-    strengths: ["Experience with peer code review."],
-    areasForImprovement: [
-      "Deepen technical knowledge of Next.js and front-end optimization techniques.",
-      "Practice articulating problem-solving approaches with specific examples.",
-      "Improve confidence and clarity in communication.",
-    ],
-    finalAssessment:
-      "The candidate demonstrated limited technical knowledge and struggled to provide specific examples of their experience with Next.js. Significant improvement is needed in technical skills, problem-solving articulation, and confidence.",
-  }
+interface QuestionAnswer {
+  question: string;
+  answer_text_area: string;
+  evaluation: Evaluation;
+  question_type: string;
+  question_index: number;
+}
+
+interface HrEvaluation {
+  analysis: string;
+  communication_feedback: string;
+  communication_score: number;
+  energy_feedback: string;
+  energy_score: number;
+  overall_score: number;
+  professionalism_feedback: string;
+  professionalism_score: number;
+  sociability_feedback: string;
+  sociability_score: number;
+}
+
+interface Props {
+  hr_evaluation: HrEvaluation;
+  questions_answers: Record<string, QuestionAnswer>;
+}
+
+const ScoreBadge = ({ score }: { score: number }) => {
+  const colors = {
+    1: "bg-red-500",
+    2: "bg-orange-400",
+    3: "bg-yellow-400",
+    4: "bg-green-400",
+    5: "bg-green-600",
+  };
   return (
-    <div className="relative max-w-5xl mx-auto p-6 bg-white rounded-xl shadow border border-gray-200 space-y-6">
-      <header>
-        <p className="text-2xl font-semibold text-purple-700">AI Interview Feedback Summary</p>
-        <p className="text-sm text-gray-500 mt-1">Interview ID: {feedback.interviewId}</p>
-        <p className="text-sm text-gray-500">User ID: {feedback.userId}</p>
-      </header>
-<div className="absolute top-2 right-5 border text-xs text-red-700 rounded-full p-2">
-  X Close
-</div>
-      <section>
-        <h2 className="text-lg font-medium text-gray-800">Total Score</h2>
-        <div className="text-xl font-bold text-purple-600">{feedback.totalScore}/100</div>
-      </section>
+    <span
+      className={`text-white text-sm px-2 py-1 rounded-full ${
+        colors[score as keyof typeof colors]
+      }`}
+    >
+      Score: {score}
+    </span>
+  );
+};
+declare module "jspdf" {
+  interface jsPDF {
+    lastAutoTable?: { finalY: number };
+  }
+}
 
-      <section className="w-full h-96">
-        <h2 className="text-lg font-medium text-gray-800 mb-2">Category Score Chart</h2>
-        <ResponsiveContainer>
-          <RadarChart cx="50%" cy="50%" outerRadius="80%" data={feedback.categoryScores}>
-            <PolarGrid />
-            <PolarAngleAxis dataKey="name" />
-            <PolarRadiusAxis angle={30} domain={[0, 100]} />
-            <Radar name="Score" dataKey="score" stroke="#7e22ce" fill="#c084fc" fillOpacity={0.6} />
-          </RadarChart>
-        </ResponsiveContainer>
-      </section>
+const CandidateEvaluation: React.FC<Props> = ({
+  hr_evaluation,
+  questions_answers,
+}) => {
+  const chartData = [
+    { category: "Communication", score: hr_evaluation.communication_score },
+    { category: "Energy", score: hr_evaluation.energy_score },
+    { category: "Professionalism", score: hr_evaluation.professionalism_score },
+    { category: "Sociability", score: hr_evaluation.sociability_score },
+    { category: "Overall", score: hr_evaluation.overall_score },
+  ];
 
-      <section>
-        <h2 className="text-lg font-medium text-gray-800 mb-2">Category Feedback</h2>
-        <div className="space-y-4">
-          {feedback.categoryScores.map((cat) => (
-            <div key={cat.name} className="bg-gray-50 p-4 rounded-md border">
-              <div className="flex justify-between items-center">
-                <h3 className="text-md font-semibold text-gray-700">{cat.name}</h3>
-                <span className="text-sm font-medium text-purple-600">{cat.score}/100</span>
-              </div>
-              <p className="text-sm text-gray-600 mt-1">{cat.comment}</p>
+  const handleDownloadPDF = () => {
+    const doc = new jsPDF();
+    doc.text("Candidate Evaluation Summary", 14, 20);
+    autoTable(doc, {
+      startY: 30,
+      head: [["Category", "Score"]],
+      body: chartData.map((item) => [item.category, item.score.toString()]),
+    });
+
+    autoTable(doc, {
+      startY: doc.lastAutoTable ? doc.lastAutoTable.finalY + 10 : 40,
+      head: [["Q#", "Question", "Answer", "Feedback", "Score"]],
+      body: Object.values(questions_answers).map((qa) => [
+        `Q${qa.question_index + 1}`,
+        qa.question,
+        qa.answer_text_area,
+        qa.evaluation.feedback,
+        qa.evaluation.score.toString(),
+      ]),
+    });
+
+    doc.save("candidate_evaluation.pdf");
+  };
+
+  const handleDownloadCSV = () => {
+    let csv = "Category,Score\n";
+    csv += chartData.map((item) => `${item.category},${item.score}`).join("\n");
+    csv += "\n\nQ#,Question,Answer,Feedback,Score\n";
+    csv += Object.values(questions_answers)
+      .map(
+        (qa) =>
+          `Q${qa.question_index + 1},"${qa.question}","${
+            qa.answer_text_area
+          }","${qa.evaluation.feedback}",${qa.evaluation.score}`
+      )
+      .join("\n");
+
+    const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+    saveAs(blob, "candidate_evaluation.csv");
+  };
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
+      className="max-w-5xl mx-auto p-6 space-y-8 bg-gray-200"
+    >
+      <div className="flex justify-end gap-4">
+        <Button onClick={handleDownloadPDF}><Download size={18}/> PDF</Button>
+        {/* <Button onClick={handleDownloadCSV} variant="outline">
+          Download CSV
+        </Button> */}
+      </div>
+
+      {/* HR Evaluation Summary */}
+      <motion.div
+        whileHover={{ scale: 1.01 }}
+        className="bg-white shadow rounded-2xl p-6"
+      >
+        <h2 className="text-2xl font-bold mb-4 text-gray-800">
+          HR Evaluation Summary
+        </h2>
+        <div className="space-y-4 text-sm text-gray-700">
+          <p>
+            <strong>Analysis:</strong> {hr_evaluation.analysis}
+          </p>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <p>
+                <strong>Communication:</strong>{" "}
+                {hr_evaluation.communication_feedback}
+              </p>
+              <ScoreBadge score={hr_evaluation.communication_score} />
             </div>
+            <div>
+              <p>
+                <strong>Energy:</strong> {hr_evaluation.energy_feedback}
+              </p>
+              <ScoreBadge score={hr_evaluation.energy_score} />
+            </div>
+            <div>
+              <p>
+                <strong>Professionalism:</strong>{" "}
+                {hr_evaluation.professionalism_feedback}
+              </p>
+              <ScoreBadge score={hr_evaluation.professionalism_score} />
+            </div>
+            <div>
+              <p>
+                <strong>Sociability:</strong>{" "}
+                {hr_evaluation.sociability_feedback}
+              </p>
+              <ScoreBadge score={hr_evaluation.sociability_score} />
+            </div>
+          </div>
+          <div>
+            <p className="font-semibold">Overall Score:</p>
+            <ScoreBadge score={hr_evaluation.overall_score} />
+          </div>
+        </div>
+      </motion.div>
+
+      {/* Score Chart */}
+      <motion.div
+        whileHover={{ scale: 1.01 }}
+        className="bg-white shadow rounded-2xl p-6"
+      >
+        <h2 className="text-2xl font-bold mb-4 text-gray-800">
+          Score Overview
+        </h2>
+        <ResponsiveContainer width="100%" height={300}>
+          <BarChart data={chartData}>
+            <XAxis dataKey="category" />
+            <YAxis domain={[0, 5]} />
+            <Tooltip />
+            <Bar dataKey="score" fill="#3b82f6" radius={[4, 4, 0, 0]} />
+          </BarChart>
+        </ResponsiveContainer>
+      </motion.div>
+
+      {/* Questions and Answers */}
+      <motion.div
+        whileHover={{ scale: 1.01 }}
+        className="bg-white shadow rounded-2xl p-6"
+      >
+        <h2 className="text-2xl font-bold mb-4 text-gray-800">
+          Interview Questions & Feedback
+        </h2>
+        <div className="space-y-6">
+          {Object.values(questions_answers).map((qa, index) => (
+            <motion.div
+              key={index}
+              whileHover={{ backgroundColor: "#f9fafb" }}
+              className="border-t pt-4"
+            >
+              <p className="text-gray-800 font-medium">
+                Q{qa.question_index + 1} ({qa.question_type}): {qa.question}
+              </p>
+              <p className="mt-2 text-gray-600">
+                <strong>Answer:</strong> {qa.answer_text_area}
+              </p>
+              <p className="mt-1 text-gray-600">
+                <strong>Feedback:</strong> {qa.evaluation.feedback}
+              </p>
+              <div className="mt-2">
+                <ScoreBadge score={qa.evaluation.score} />
+              </div>
+            </motion.div>
           ))}
         </div>
-      </section>
-
-      <section>
-        <h2 className="text-lg font-medium text-gray-800 mb-2">Strengths</h2>
-        <ul className="list-disc list-inside space-y-1 text-sm text-green-700">
-          {feedback.strengths.map((s, i) => <li key={i}>{s}</li>)}
-        </ul>
-      </section>
-
-      <section>
-        <h2 className="text-lg font-medium text-gray-800 mb-2">Areas for Improvement</h2>
-        <ul className="list-disc list-inside space-y-1 text-sm text-yellow-800">
-          {feedback.areasForImprovement.map((a, i) => <li key={i}>{a}</li>)}
-        </ul>
-      </section>
-
-      <section>
-        <h2 className="text-lg font-medium text-gray-800 mb-2">Final Assessment</h2>
-        <p className="text-sm text-gray-700">{feedback.finalAssessment}</p>
-      </section>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 };
 
-export default InterviewFeedbackWithChart;
+export default CandidateEvaluation;

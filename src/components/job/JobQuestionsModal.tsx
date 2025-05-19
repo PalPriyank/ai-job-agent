@@ -63,7 +63,8 @@ const JobQuestionsModal: React.FC<Props> = ({
       const publishedJob = await publishJob(
         selectedJob?.title,
         selectedJob.skills,
-        selectedJob.recommended_location
+        selectedJob.recommended_location,
+        selectedJob.job_description
       );
       console.log("✌️publishedJob --->", publishedJob);
       fetchjob();
